@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../entities/person.dart';
+import '../router.dart';
 import 'components/async_value_handler.dart';
 import 'components/persons.dart';
 
@@ -72,23 +72,17 @@ class _ListView extends ConsumerWidget {
                   '${entry.key.name} - ${entry.value}',
                 ),
                 trailing: OutlinedButton(
-                  // onPressed: () => PersonDetailsRoute(
-                  //   family.id,
-                  //   person.id,
-                  //   entry.key,
-                  //   $extra: ++_extraClickCount,
-                  // ).go(context),
-                  onPressed: () => context.go(
-                    '/family/${family.id}/person/${person.id}/details/${entry.key.name}',
-                    extra: ++_extraClickCount,
-                  ),
+                  onPressed: () => PersonDetailsRoute(
+                    family.id,
+                    person.id,
+                    entry.key.name,
+                    $extra: ++_extraClickCount,
+                  ).go(context),
                   child: const Text('With extra...'),
                 ),
-                // onTap: () => PersonDetailsRoute(family.id, person.id, entry.key)
-                //     .go(context),
-                onTap: () => context.go(
-                  '/family/${family.id}/person/${person.id}/details/${entry.key.name}',
-                ),
+                onTap: () =>
+                    PersonDetailsRoute(family.id, person.id, entry.key.name)
+                        .go(context),
               )
           ],
         );

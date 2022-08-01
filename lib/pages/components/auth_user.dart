@@ -4,9 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../entities/auth_user.dart';
 import '../../repositories/auth_repository.dart';
 
-final authUserProvider = Provider<AuthUser?>(
+final _authUserStreamProvider = StreamProvider<AuthUser?>(
   (ref) {
-    final authRepository = ref.read(authRepositoryProvider);
+    final authRepository = ref.watch(authRepositoryProvider);
+    return authRepository.changes();
+  },
+);
+
+final authUserProvider = FutureProvider<AuthUser?>(
+  (ref) {
+    ref.listen<AsyncValue<AuthUser?>>(
+      _authUserStreamProvider,
+      (previous, next) {
+        // Streamを監視して都度反映する
+        ref.state = next;
+      },
+    );
+
+    // 初回は最新データを返す
+    final authRepository = ref.watch(authRepositoryProvider);
     return authRepository.authUser;
   },
 );
@@ -47,3 +63,12 @@ class AuthUserStateNotifier extends ChangeNotifier {
     }
   }
 }
+
+final updateUserName = Provider(
+  (ref) {
+    final read = ref.read;
+    return (String userName) {
+      read(authRepositoryProvider).update(userName);
+    };
+  },
+);

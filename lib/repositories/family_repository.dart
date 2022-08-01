@@ -25,8 +25,6 @@ class FamilyRepository {
     return FamilyPerson(family: family, person: family.person(pid));
   }
 
-  Family familyById(String fid) => _familyData.family(fid);
-
   final List<Family> _familyData = <Family>[
     Family(
       id: 'f1',

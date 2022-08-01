@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Family;
-import 'package:go_router/go_router.dart';
 
 import '../entities/family.dart';
 import '../entities/person.dart';
+import '../router.dart';
 import 'components/async_value_handler.dart';
 import 'components/families.dart';
 
@@ -56,8 +56,7 @@ class _ListView extends ConsumerWidget {
           for (final Person p in family.people)
             ListTile(
               title: Text(p.name),
-              // onTap: () => PersonRoute(family.id, p.id).go(context),
-              onTap: () => context.go('/family/${family.id}/person/${p.id}'),
+              onTap: () => PersonRoute(family.id, p.id).go(context),
             ),
         ],
       ),

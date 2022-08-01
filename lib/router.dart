@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,84 +11,29 @@ import 'pages/person_details_page.dart';
 import 'pages/person_screen.dart';
 import 'repositories/auth_repository.dart';
 
+part 'router.g.dart';
+
 final routerProvider = Provider(
   (ref) => GoRouter(
     debugLogDiagnostics: true,
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: 'family/:fid',
-            builder: (context, state) => FamilyScreen(
-              fid: state.params['fid']!,
-            ),
-            routes: [
-              GoRoute(
-                path: 'person/:pid',
-                builder: (context, state) => PersonScreen(
-                  fid: state.params['fid']!,
-                  pid: int.parse(state.params['pid']!),
-                ),
-                routes: [
-                  GoRoute(
-                    path: 'details/:details',
-                    builder: (context, state) => PersonDetailsPage(
-                      fid: state.params['fid']!,
-                      pid: int.parse(state.params['pid']!),
-                      details: PersonDetails.valueOf(state.params['details']),
-                      extra: state.extra as int?,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => LoginScreen(
-          from: state.queryParams['from'],
-        ),
-      ),
-    ],
+    routes: $appRoutes,
 
     // redirect to the login page if the user is not logged in
     redirect: (state) {
-      // final loggedIn = loginInfo.loggedIn;
-
-      // // check just the subloc in case there are query parameters
-      // final String loginLoc = const LoginRoute().location;
-      // final goingToLogin = state.subloc == loginLoc;
-
-      // // the user is not logged in and not headed to /login, they need to login
-      // if (!loggedIn && !goingToLogin) {
-      //   return LoginRoute(fromPage: state.subloc).location;
-      // }
-
-      // // the user is logged in and headed to /login, no need to login again
-      // if (loggedIn && goingToLogin) {
-      //   return const HomeRoute().location;
-      // }
-
-      // // no need to redirect at all
-      // return null;
-
       final loggedIn = ref.read(authRepositoryProvider).loggedIn;
+
       // check just the subloc in case there are query parameters
-      const loginLoc = '/login';
+      final loginLoc = const LoginRoute().location;
       final goingToLogin = state.subloc == loginLoc;
 
       // the user is not logged in and not headed to /login, they need to login
       if (!loggedIn && !goingToLogin) {
-        return '/login?from=${state.subloc}';
+        return LoginRoute(from: state.subloc).location;
       }
 
       // the user is logged in and headed to /login, no need to login again
       if (loggedIn && goingToLogin) {
-        return '/';
+        return const HomeRoute().location;
       }
 
       // no need to redirect at all
@@ -99,85 +45,80 @@ final routerProvider = Provider(
   ),
 );
 
-// @TypedGoRoute<HomeRoute>(
-//   path: '/',
-//   routes: <TypedGoRoute<GoRouteData>>[
-//     TypedGoRoute<FamilyRoute>(
-//       path: 'family/:fid',
-//       routes: <TypedGoRoute<GoRouteData>>[
-//         TypedGoRoute<PersonRoute>(
-//           path: 'person/:pid',
-//           routes: <TypedGoRoute<GoRouteData>>[
-//             TypedGoRoute<PersonDetailsRoute>(path: 'details/:details'),
-//           ],
-//         ),
-//       ],
-//     )
-//   ],
-// )
-// class HomeRoute extends GoRouteData {
-//   const HomeRoute();
+@TypedGoRoute<HomeRoute>(
+  path: '/',
+  routes: <TypedGoRoute<GoRouteData>>[
+    TypedGoRoute<FamilyRoute>(
+      path: 'family/:fid',
+      routes: <TypedGoRoute<GoRouteData>>[
+        TypedGoRoute<PersonRoute>(
+          path: 'person/:pid',
+          routes: <TypedGoRoute<GoRouteData>>[
+            TypedGoRoute<PersonDetailsRoute>(path: 'details/:details'),
+          ],
+        ),
+      ],
+    )
+  ],
+)
+class HomeRoute extends GoRouteData {
+  const HomeRoute();
 
-//   @override
-//   Widget build(BuildContext context) => const HomeScreen();
-// }
+  @override
+  Widget build(BuildContext context) => const HomeScreen();
+}
 
-// @TypedGoRoute<LoginRoute>(
-//   path: '/login',
-// )
-// class LoginRoute extends GoRouteData {
-//   const LoginRoute({this.fromPage});
+class FamilyRoute extends GoRouteData {
+  const FamilyRoute(this.fid);
 
-//   final String? fromPage;
+  final String fid;
 
-//   @override
-//   Widget build(BuildContext context) => LoginScreen(from: fromPage);
-// }
+  @override
+  Widget build(BuildContext context) => FamilyScreen(fid: fid);
+}
 
-// class FamilyRoute extends GoRouteData {
-//   const FamilyRoute(this.fid);
+class PersonRoute extends GoRouteData {
+  const PersonRoute(this.fid, this.pid);
 
-//   final String fid;
+  final String fid;
+  final int pid;
 
-//   @override
-//   Widget build(BuildContext context) => FamilyScreen(family: familyById(fid));
-// }
+  @override
+  Widget build(BuildContext context) {
+    return PersonScreen(fid: fid, pid: pid);
+  }
+}
 
-// class PersonRoute extends GoRouteData {
-//   const PersonRoute(this.fid, this.pid);
+class PersonDetailsRoute extends GoRouteData {
+  const PersonDetailsRoute(this.fid, this.pid, this.details, {this.$extra});
 
-//   final String fid;
-//   final int pid;
+  final String fid;
+  final int pid;
+  final String details;
+  final int? $extra;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final Family family = familyById(fid);
-//     final Person person = family.person(pid);
-//     return PersonScreen(family: family, person: person);
-//   }
-// }
+  @override
+  Page<void> buildPage(BuildContext context) {
+    return MaterialPage<Object>(
+      fullscreenDialog: true,
+      child: PersonDetailsPage(
+        fid: fid,
+        pid: pid,
+        details: PersonDetails.valueOf(details),
+        extra: $extra,
+      ),
+    );
+  }
+}
 
-// class PersonDetailsRoute extends GoRouteData {
-//   const PersonDetailsRoute(this.fid, this.pid, this.details, {this.$extra});
+@TypedGoRoute<LoginRoute>(
+  path: '/login',
+)
+class LoginRoute extends GoRouteData {
+  const LoginRoute({this.from});
 
-//   final String fid;
-//   final int pid;
-//   final PersonDetails details;
-//   final int? $extra;
+  final String? from;
 
-//   @override
-//   Page<void> buildPage(BuildContext context) {
-//     final Family family = familyById(fid);
-//     final Person person = family.person(pid);
-
-//     return MaterialPage<Object>(
-//       fullscreenDialog: true,
-//       child: PersonDetailsPage(
-//         family: family,
-//         person: person,
-//         detailsKey: details,
-//         extra: $extra,
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) => LoginScreen(from: from);
+}

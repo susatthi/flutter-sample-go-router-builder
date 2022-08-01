@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Family;
-import 'package:go_router/go_router.dart';
 
 import '../app.dart';
+import '../entities/auth_user.dart';
 import '../entities/family.dart';
+import '../router.dart';
 import 'components/async_value_handler.dart';
 import 'components/auth_user.dart';
 import 'components/families.dart';
@@ -19,11 +20,11 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           ElevatedButton(
-            // onPressed: () => const PersonRoute('f1', 1).push(context),
-            onPressed: () => context.push('/family/f1/person/1'),
+            onPressed: () => const PersonRoute('f1', 1).push(context),
             child: const Text('Push a route'),
           ),
           const _LogoutButton(),
+          const _UpdateUserNameButton(),
         ],
       ),
       body: const _ListView(),
@@ -36,14 +37,33 @@ class _LogoutButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authUser = ref.watch(authUserProvider);
-    return authUser != null
-        ? IconButton(
-            onPressed: () => ref.read(logout)(),
-            tooltip: 'Logout: ${authUser.name}',
-            icon: const Icon(Icons.logout),
-          )
-        : const SizedBox();
+    return AsyncValueHandler<AuthUser>(
+      value: ref.watch(authUserProvider),
+      builder: (authUser) {
+        return IconButton(
+          onPressed: () => ref.read(logout)(),
+          tooltip: 'Logout: ${authUser.name}',
+          icon: const Icon(Icons.logout),
+        );
+      },
+    );
+  }
+}
+
+class _UpdateUserNameButton extends ConsumerWidget {
+  const _UpdateUserNameButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AsyncValueHandler<AuthUser>(
+      value: ref.watch(authUserProvider),
+      builder: (authUser) {
+        return IconButton(
+          onPressed: () => ref.read(updateUserName)('updated-user'),
+          icon: const Icon(Icons.update),
+        );
+      },
+    );
   }
 }
 
@@ -60,8 +80,7 @@ class _ListView extends ConsumerWidget {
             for (final f in families)
               ListTile(
                 title: Text(f.name),
-                // onTap: () => FamilyRoute(f.id).go(context),
-                onTap: () => context.go('/family/${f.id}'),
+                onTap: () => FamilyRoute(f.id).go(context),
               )
           ],
         );

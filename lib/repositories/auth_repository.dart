@@ -33,4 +33,9 @@ class AuthRepository {
     _authUser = null;
     _changesController.add(_authUser);
   }
+
+  void update(String userName) {
+    _authUser = AuthUser(name: userName);
+    _changesController.add(_authUser);
+  }
 }
