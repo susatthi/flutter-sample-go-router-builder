@@ -24,7 +24,7 @@ GoRoute get $homeRoute => GoRouteData.$route(
               factory: $PersonRouteExtension._fromState,
               routes: [
                 GoRouteData.$route(
-                  path: 'details/:details',
+                  path: 'details',
                   factory: $PersonDetailsRouteExtension._fromState,
                 ),
               ],
@@ -80,12 +80,15 @@ extension $PersonDetailsRouteExtension on PersonDetailsRoute {
       PersonDetailsRoute(
         state.params['fid']!,
         int.parse(state.params['pid']!),
-        state.params['details']!,
+        details: state.queryParams['details'],
         $extra: state.extra as int?,
       );
 
   String get location => GoRouteData.$location(
-        '/family/${Uri.encodeComponent(fid)}/person/${Uri.encodeComponent(pid.toString())}/details/${Uri.encodeComponent(details)}',
+        '/family/${Uri.encodeComponent(fid)}/person/${Uri.encodeComponent(pid.toString())}/details',
+        queryParams: {
+          if (details != null) 'details': details!,
+        },
       );
 
   void go(BuildContext context) => context.go(location, extra: this);

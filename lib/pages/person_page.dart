@@ -77,14 +77,16 @@ class _ListView extends ConsumerWidget {
                   onPressed: () => PersonDetailsRoute(
                     family.id,
                     person.id,
-                    entry.key.name,
+                    details: entry.key.name,
                     $extra: ++_extraClickCount,
                   ).go(context),
                   child: const Text('With extra...'),
                 ),
-                onTap: () =>
-                    PersonDetailsRoute(family.id, person.id, entry.key.name)
-                        .go(context),
+                onTap: () => PersonDetailsRoute(
+                  family.id,
+                  person.id,
+                  details: entry.key.name,
+                ).go(context),
               )
           ],
         );

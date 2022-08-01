@@ -54,7 +54,9 @@ final routerProvider = Provider(
         TypedGoRoute<PersonRoute>(
           path: 'person/:pid',
           routes: <TypedGoRoute<GoRouteData>>[
-            TypedGoRoute<PersonDetailsRoute>(path: 'details/:details'),
+            TypedGoRoute<PersonDetailsRoute>(
+              path: 'details',
+            ),
           ],
         ),
       ],
@@ -97,14 +99,14 @@ class PersonRoute extends GoRouteData {
 class PersonDetailsRoute extends GoRouteData {
   const PersonDetailsRoute(
     this.fid,
-    this.pid,
-    this.details, {
+    this.pid, {
+    this.details,
     this.$extra,
   });
 
   final String fid;
   final int pid;
-  final String details;
+  final String? details;
   final int? $extra;
 
   @override
