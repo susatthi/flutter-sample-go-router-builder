@@ -6,8 +6,8 @@ import '../router.dart';
 import 'components/async_value_handler.dart';
 import 'components/persons.dart';
 
-class PersonScreen extends StatelessWidget {
-  const PersonScreen({
+class PersonPage extends StatelessWidget {
+  const PersonPage({
     super.key,
     required this.fid,
     required this.pid,
@@ -15,6 +15,8 @@ class PersonScreen extends StatelessWidget {
 
   final String fid;
   final int pid;
+
+  static const name = 'person-page';
 
   @override
   Widget build(BuildContext context) {

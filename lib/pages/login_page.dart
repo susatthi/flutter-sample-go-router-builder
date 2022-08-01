@@ -5,13 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../app.dart';
 import 'components/auth_user.dart';
 
-class LoginScreen extends ConsumerWidget {
-  const LoginScreen({
+class LoginPage extends ConsumerWidget {
+  const LoginPage({
     super.key,
     this.from,
   });
 
   final String? from;
+
+  static const name = 'login-page';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

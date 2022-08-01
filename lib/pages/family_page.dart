@@ -7,13 +7,15 @@ import '../router.dart';
 import 'components/async_value_handler.dart';
 import 'components/families.dart';
 
-class FamilyScreen extends ConsumerWidget {
-  const FamilyScreen({
+class FamilyPage extends ConsumerWidget {
+  const FamilyPage({
     required this.fid,
     super.key,
   });
 
   final String fid;
+
+  static const name = 'family-page';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

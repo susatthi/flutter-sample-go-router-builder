@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import 'entities/person.dart';
 import 'pages/components/auth_user.dart';
-import 'pages/family_screen.dart';
-import 'pages/home_screen.dart';
-import 'pages/login_screen.dart';
+import 'pages/family_page.dart';
+import 'pages/home_page.dart';
+import 'pages/login_page.dart';
 import 'pages/person_details_page.dart';
-import 'pages/person_screen.dart';
+import 'pages/person_page.dart';
 import 'repositories/auth_repository.dart';
 
 part 'router.g.dart';
@@ -65,32 +65,42 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context) => const HomeScreen();
+  Widget build(BuildContext context) => const HomePage();
 }
 
 class FamilyRoute extends GoRouteData {
-  const FamilyRoute(this.fid);
+  const FamilyRoute(
+    this.fid,
+  );
 
   final String fid;
 
   @override
-  Widget build(BuildContext context) => FamilyScreen(fid: fid);
+  Widget build(BuildContext context) => FamilyPage(fid: fid);
 }
 
 class PersonRoute extends GoRouteData {
-  const PersonRoute(this.fid, this.pid);
+  const PersonRoute(
+    this.fid,
+    this.pid,
+  );
 
   final String fid;
   final int pid;
 
   @override
   Widget build(BuildContext context) {
-    return PersonScreen(fid: fid, pid: pid);
+    return PersonPage(fid: fid, pid: pid);
   }
 }
 
 class PersonDetailsRoute extends GoRouteData {
-  const PersonDetailsRoute(this.fid, this.pid, this.details, {this.$extra});
+  const PersonDetailsRoute(
+    this.fid,
+    this.pid,
+    this.details, {
+    this.$extra,
+  });
 
   final String fid;
   final int pid;
@@ -115,10 +125,12 @@ class PersonDetailsRoute extends GoRouteData {
   path: '/login',
 )
 class LoginRoute extends GoRouteData {
-  const LoginRoute({this.from});
+  const LoginRoute({
+    this.from,
+  });
 
   final String? from;
 
   @override
-  Widget build(BuildContext context) => LoginScreen(from: from);
+  Widget build(BuildContext context) => LoginPage(from: from);
 }

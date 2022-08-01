@@ -9,8 +9,10 @@ import 'components/async_value_handler.dart';
 import 'components/auth_user.dart';
 import 'components/families.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  static const name = 'home-page';
 
   @override
   Widget build(BuildContext context) {

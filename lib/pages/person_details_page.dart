@@ -19,6 +19,8 @@ class PersonDetailsPage extends StatelessWidget {
   final PersonDetails details;
   final int? extra;
 
+  static const name = 'person-details-page';
+
   @override
   Widget build(BuildContext context) {
     final parameter = PersonParameter(fid: fid, pid: pid);
