@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Family;
 
@@ -79,10 +81,22 @@ class _ListView extends ConsumerWidget {
       builder: (families) {
         return ListView(
           children: [
-            for (final f in families)
+            for (final family in families)
               ListTile(
-                title: Text(f.name),
-                onTap: () => FamilyRoute(f.id).go(context),
+                title: Text(family.name),
+                onTap: () {
+                  FamilyRoute(family.id).go(context);
+
+                  // context.go('/family/${family.id}');
+
+                  // // goNamed() の場合
+                  // context.goNamed(
+                  //   FamilyPage.name,
+                  //   params: {
+                  //     'fid': family.id,
+                  //   },
+                  // );
+                },
               )
           ],
         );

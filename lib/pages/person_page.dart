@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -74,12 +76,32 @@ class _ListView extends ConsumerWidget {
                   '${entry.key.name} - ${entry.value}',
                 ),
                 trailing: OutlinedButton(
-                  onPressed: () => PersonDetailsRoute(
-                    family.id,
-                    person.id,
-                    details: entry.key.name,
-                    $extra: ++_extraClickCount,
-                  ).go(context),
+                  onPressed: () {
+                    PersonDetailsRoute(
+                      family.id,
+                      person.id,
+                      details: entry.key.name,
+                      $extra: ++_extraClickCount,
+                    ).go(context);
+
+                    // context.go(
+                    //   '/family/${family.id}/person/${person.id}/details?details=${entry.key.name}',
+                    //   extra: ++_extraClickCount,
+                    // );
+
+                    // // goNamed() の場合はこうなる
+                    // context.goNamed(
+                    //   PersonDetailsPage.name,
+                    //   params: {
+                    //     'fid': family.id,
+                    //     'pid': person.id.toString(),
+                    //   },
+                    //   queryParams: {
+                    //     'details': entry.key.name,
+                    //   },
+                    //   extra: ++_extraClickCount,
+                    // );
+                  },
                   child: const Text('With extra...'),
                 ),
                 onTap: () => PersonDetailsRoute(
